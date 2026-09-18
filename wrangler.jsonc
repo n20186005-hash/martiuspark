@@ -1,11 +1,11 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "campus-martius-park",
-  "main": "./dist/_worker.js/index.js",
+  "main": "@astrojs/cloudflare/entrypoints/server",
   "compatibility_date": "2026-09-01",
   "compatibility_flags": ["nodejs_compat"],
   "assets": {
     "binding": "ASSETS",
-    "directory": "./dist"
+    "directory": "./dist/client"
   }
 }

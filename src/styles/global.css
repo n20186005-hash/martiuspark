@@ -1,0 +1,14 @@
+@import "tailwindcss";
+
+:root{
+  --ink:#10231f; --cream:#f2efe7; --mint:#9fd6c8; --brick:#a84532; --gold:#f0bc56; --night:#071412;
+}
+html{scroll-behavior:smooth;background:var(--cream)}
+body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink);background:var(--cream)}
+::selection{background:var(--gold);color:var(--night)}
+a{color:inherit}
+.display{font-family:Georgia,"Times New Roman",serif;letter-spacing:-.04em}
+.gridlines{background-image:linear-gradient(rgba(16,35,31,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(16,35,31,.07) 1px,transparent 1px);background-size:32px 32px}
+.card{border:1px solid rgba(16,35,31,.18);background:rgba(255,255,255,.72);backdrop-filter:blur(10px);box-shadow:0 16px 50px rgba(7,20,18,.08)}
+.pill{border:1px solid currentColor;border-radius:999px;padding:.45rem .8rem;font-size:.75rem;letter-spacing:.1em;text-transform:uppercase}
+.section-kicker{font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;font-weight:800;color:var(--brick)}

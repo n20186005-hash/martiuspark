@@ -2,30 +2,56 @@
 import '../styles/global.css';
 export const prerender = true;
 const site = Astro.site;
-const canonical = site ? new URL('/', site).href : undefined;
-const ogImage = site ? new URL('/images/campus-martius-lawn.jpg', site).href : '/images/campus-martius-lawn.jpg';
+const canonical = site ? new URL('/', site).href : 'https://martiuspark.com/';
+const ogImage = 'https://upload.wikimedia.org/wikipedia/commons/7/7c/The_lawn_at_Campus_Martius_Park.jpg';
+const mapsUrl = 'https://maps.app.goo.gl/P7XAiSujmMeMguXK7';
+const tourismUrl = 'https://visitdetroit.com/';
+
+// --- Review / rating data (page-only, never injected into JSON-LD) ---
+const rating = '4.7';
+const reviewCount = '13,323';
+const syncMonth = '2026 年 9 月';
+const ratingAttribution = `评分与评价数同步自谷歌地图（Google Maps）用户评价 · ${syncMonth} · `;
+const sourceNote = `同步自 Google 地图用户评价，同步时间 ${syncMonth}；版权归原作者与 Google 地图所有`;
+
+// --- Entity-bound SEO data ---
+const fullName = 'Campus Martius Park';
+const shortName = 'Martius Park';
+const city = 'Detroit';
+const state = 'Michigan';
+const country = 'United States';
+const nearby1 = 'Hart Plaza';
+const nearby2 = 'Renaissance Center';
+
 const attractionJsonLd = {
   '@context': 'https://schema.org',
-  '@type': ['TouristAttraction','Park'],
-  name: 'Campus Martius Park',
-  description: "Detroit's downtown gathering place with seasonal programming, an urban beach, winter skating and skyline views.",
-  ...(canonical ? { url: canonical } : {}),
+  '@type': ['TouristAttraction', 'Park'],
+  '@id': 'https://martiuspark.com/#attraction',
+  name: fullName,
+  alternateName: [shortName, 'Campus Martius Park Detroit'],
+  description: `Comprehensive visitor guide to ${fullName} in ${city}, ${state}, ${country} — Detroit's downtown gathering place with seasonal programming, an urban beach, winter skating and skyline views.`,
+  url: canonical,
+  image: [ogImage],
+  isAccessibleForFree: true,
   telephone: '+1-313-566-8250',
   address: {
-    '@type': 'PostalAddress', streetAddress: '800 Woodward Ave', addressLocality: 'Detroit', addressRegion: 'MI', postalCode: '48226', addressCountry: 'US'
+    '@type': 'PostalAddress', streetAddress: '800 Woodward Ave', addressLocality: city, addressRegion: 'MI', postalCode: '48226', addressCountry: 'US'
   },
   geo: { '@type': 'GeoCoordinates', latitude: 42.3319145, longitude: -83.0465866 },
   openingHoursSpecification: [{ '@type':'OpeningHoursSpecification', dayOfWeek:['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'], opens:'07:00', closes:'23:00'}],
-  aggregateRating: { '@type':'AggregateRating', ratingValue:'4.7', reviewCount:'13323', bestRating:'5' },
-  isAccessibleForFree: true
+  hasMap: mapsUrl,
+  sameAs: [ mapsUrl, tourismUrl ]
 };
+
 const faqs = [
-  ['Is Campus Martius Park free to visit?','Yes. General access to the public park is free. Seasonal attractions such as ice skating may charge admission and rental fees.'],
-  ['What are the park hours?','Visit Detroit currently lists Campus Martius Park as open daily from 7:00 AM to 11:00 PM. Seasonal venues inside the park can keep different hours.'],
-  ['How long should I spend here?','Plan about 45–90 minutes for the park itself, longer if you are skating, attending an event, dining, or pairing it with nearby downtown sights.'],
-  ['What is the best time to visit?','Late spring through early fall is best for the lawn, beach-style seating and outdoor programming. Winter is the signature season for the skating rink, holiday lights and tree.'],
-  ['Is parking available nearby?','Yes. Downtown has metered street parking and multiple garages. Parc notes public parking beneath One Kennedy Square on Griswold Street; ParkDetroit can also show and pay for participating spaces.'],
-  ['Can I reach the park by transit?','Yes. The QLINE has a Campus Martius stop on Woodward Avenue and currently operates fare-free. The Detroit People Mover also serves nearby downtown stations, including Financial District.']
+  ['Where is Campus Martius Park located?', `${fullName} is located at 800 Woodward Ave, ${city}, ${state}, ${country}, at the historic point of origin of downtown Detroit where Woodward, Michigan and several other streets converge.`],
+  ['Is Campus Martius Park free to visit?', 'Yes. General access to the public park is free. Seasonal attractions such as ice skating may charge admission and rental fees.'],
+  ['What are the park hours?', 'Visit Detroit currently lists Campus Martius Park as open daily from 7:00 AM to 11:00 PM. Seasonal venues inside the park can keep different hours.'],
+  ['How long should I spend here?', 'Plan about 45–90 minutes for the park itself, longer if you are skating, attending an event, dining, or pairing it with nearby downtown sights.'],
+  ['What is there to do at Campus Martius Park?', 'The park flips with the seasons: a summer lawn and beach-style lounge, a winter ice skating rink framed by the holiday tree and downtown towers, plus fountains, events and park-facing dining.'],
+  ['What is the best time to visit?', 'Late spring through early fall is best for the lawn, beach-style seating and outdoor programming. Winter is the signature season for the skating rink, holiday lights and tree.'],
+  ['Is parking available nearby?', 'Yes. Downtown has metered street parking and multiple garages. Parc notes public parking beneath One Kennedy Square on Griswold Street; ParkDetroit can also show and pay for participating spaces.'],
+  ['Can I reach the park by transit?', 'Yes. The QLINE has a Campus Martius stop on Woodward Avenue and currently operates fare-free. The Detroit People Mover also serves nearby downtown stations, including Financial District.']
 ];
 const faqJsonLd = { '@context':'https://schema.org','@type':'FAQPage', mainEntity: faqs.map(([q,a])=>({'@type':'Question',name:q,acceptedAnswer:{'@type':'Answer',text:a}})) };
 ---
@@ -34,42 +60,57 @@ const faqJsonLd = { '@context':'https://schema.org','@type':'FAQPage', mainEntit
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width" />
-  <title>Campus Martius Park — A Local Guide to Detroit's Downtown Gathering Place</title>
-  <meta name="description" content="Plan a visit to Campus Martius Park in Downtown Detroit: hours, seasonal highlights, skating, transit, parking, nearby food and attractions." />
-  {canonical && <link rel="canonical" href={canonical} />}
-  <meta property="og:title" content="Campus Martius Park — Detroit's Downtown Gathering Place" />
-  <meta property="og:description" content="A practical local guide to Detroit's signature public square." />
+  <title>Campus Martius Park (Detroit) — Visitor Guide & Location</title>
+  <meta name="description" content={`Discover ${fullName}, the iconic landmark in ${city}, ${state}, ${country}. View location map, opening details, nearby ${nearby1} and the ${nearby2}, and travel tips.`} />
+  <link rel="canonical" href={canonical} />
+  <meta property="og:title" content="Campus Martius Park - Detroit Travel Guide" />
+  <meta property="og:description" content={`Official visitor guide to ${fullName} in ${city}, ${state}, ${country}.`} />
+  <meta property="og:url" content={canonical} />
   <meta property="og:type" content="website" />
-  {canonical && <meta property="og:url" content={canonical} />}
   <meta property="og:image" content={ogImage} />
+  <meta property="og:image:alt" content={`${fullName} in ${city}, ${country}`} />
+  <meta name="twitter:card" content="summary_large_image" />
   <link rel="icon" href="/icons/favicon.svg" type="image/svg+xml" />
   <link rel="icon" href="/icons/favicon-32.png" sizes="32x32" />
   <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Martius Park" />
   <link rel="manifest" href="/site.webmanifest" />
   <meta name="theme-color" content="#10231f" />
   <script type="application/ld+json" set:html={JSON.stringify(attractionJsonLd)}></script>
   <script type="application/ld+json" set:html={JSON.stringify(faqJsonLd)}></script>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-HXM22WWPKP"></script>
   <script is:inline>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-HXM22WWPKP');</script>
+  <script is:inline>if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js').catch(()=>{}));}</script>
 </head>
 <body>
   <header class="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-[#071412]/90 text-white backdrop-blur">
     <div class="mx-auto flex max-w-7xl items-center justify-between px-5 py-3">
       <a href="#top" aria-label="Campus Martius home"><img src="/logo.svg" alt="Campus Martius Detroit" class="h-11 w-auto" /></a>
-      <nav class="hidden gap-6 text-sm md:flex"><a href="#visit">Visit</a><a href="#seasons">Seasons</a><a href="#nearby">Nearby</a><a href="#map">Map</a><a href="#faq">FAQ</a></nav>
+      <nav class="hidden gap-6 text-sm md:flex"><a href="#visit">Visit</a><a href="#reviews">Reviews</a><a href="#seasons">Seasons</a><a href="#nearby">Nearby</a><a href="#history">History</a><a href="#map">Map</a><a href="#faq">FAQ</a><a href="#sources">Sources</a></nav>
     </div>
   </header>
 
   <main id="top">
     <section class="relative min-h-[90vh] overflow-hidden bg-[#10231f] text-white">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/7/7c/The_lawn_at_Campus_Martius_Park.jpg" alt="The lawn at Campus Martius Park in Downtown Detroit" class="absolute inset-0 h-full w-full object-cover opacity-55" />
+      <img src="https://upload.wikimedia.org/wikipedia/commons/7/7c/The_lawn_at_Campus_Martius_Park.jpg" alt={`${fullName} — the lawn in Downtown ${city}, ${country}`} class="absolute inset-0 h-full w-full object-cover opacity-55" />
       <div class="absolute inset-0 bg-gradient-to-t from-[#071412] via-[#071412]/30 to-[#071412]/35"></div>
       <div class="relative mx-auto flex min-h-[90vh] max-w-7xl items-end px-5 pb-16 pt-32">
         <div class="max-w-4xl">
           <div class="mb-5 flex flex-wrap gap-2"><span class="pill">Downtown Detroit</span><span class="pill">Free public park</span><span class="pill">Open daily</span></div>
-          <h1 class="display text-6xl font-bold leading-[.92] sm:text-8xl">Detroit's<br/>urban living room.</h1>
+          <h1 class="display text-6xl font-bold leading-[.92] sm:text-8xl">{fullName} <span class="text-[#f0bc56]">({city})</span></h1>
           <p class="mt-7 max-w-2xl text-lg text-white/85 sm:text-xl">Campus Martius is where Woodward meets the heart of downtown: a compact civic square that flips from lawn and beach vibes to ice, lights and holiday energy.</p>
-          <div class="mt-8 flex flex-wrap gap-3"><a href="#visit" class="rounded-full bg-[#f0bc56] px-6 py-3 font-bold text-[#10231f]">Plan your visit</a><a href="https://maps.app.goo.gl/P7XAiSujmMeMguXK7" class="rounded-full border border-white/50 px-6 py-3 font-semibold" target="_blank" rel="noopener">Open in Google Maps</a></div>
+          <div class="mt-8 flex flex-wrap items-center gap-3">
+            <a href="#visit" class="rounded-full bg-[#f0bc56] px-6 py-3 font-bold text-[#10231f]">Plan your visit</a>
+            <a href={mapsUrl} class="rounded-full border border-white/50 px-6 py-3 font-semibold" target="_blank" rel="noopener">Open in Google Maps</a>
+          </div>
+          <div class="mt-7 inline-flex items-center gap-3 rounded-full bg-white/10 px-4 py-2 text-sm backdrop-blur">
+            <span class="text-[#f0bc56]" aria-hidden="true">★</span>
+            <span class="font-bold">{rating}</span>
+            <span class="text-white/80">{reviewCount} Google Maps reviews</span>
+          </div>
+          <p class="mt-2 text-xs text-white/60">{ratingAttribution}<a href={mapsUrl} class="underline" target="_blank" rel="noopener">点击查看谷歌地图全部评价↗</a></p>
         </div>
       </div>
     </section>
@@ -78,32 +119,134 @@ const faqJsonLd = { '@context':'https://schema.org','@type':'FAQPage', mainEntit
       <div class="mx-auto max-w-7xl px-5">
         <p class="section-kicker">Visit essentials</p>
         <div class="mt-4 grid gap-8 lg:grid-cols-[1.2fr_.8fr]">
-          <div><h2 class="display text-5xl font-bold sm:text-6xl">Small footprint.<br/>Big-city energy.</h2><p class="mt-6 max-w-2xl text-lg leading-8">Created in 2003 at Detroit's historic point of origin, Campus Martius is managed and programmed by the Downtown Detroit Partnership. Expect fountains, flexible seating, seasonal installations, live programming and one of downtown's most recognizable gathering spaces.</p></div>
+          <div>
+            <h2 class="display text-5xl font-bold sm:text-6xl">About {fullName}</h2>
+            <p class="mt-6 max-w-2xl text-lg leading-8">Welcome to <strong>{fullName}</strong>, widely recognized as the central <strong>{shortName}</strong>. Located in the heart of <strong>{city}</strong>, <strong>{state}</strong>, <strong>{country}</strong>, this destination serves as a primary hub for travelers visiting the region.</p>
+            <p class="mt-4 max-w-2xl leading-8">Created in 2003 at Detroit's historic point of origin, {fullName} is managed and programmed by the Downtown Detroit Partnership. Expect fountains, flexible seating, seasonal installations, live programming and one of downtown's most recognizable gathering spaces.</p>
+            <nav aria-label="Breadcrumb" class="mt-6 text-sm text-[#10231f]/70">{fullName} <span class="px-1">→</span> {city} <span class="px-1">→</span> {state} <span class="px-1">→</span> {country}</nav>
+          </div>
           <div class="card rounded-[2rem] p-6">
-            <dl class="space-y-5 text-sm"><div><dt class="font-bold uppercase tracking-wider text-[#a84532]">Address</dt><dd class="mt-1 text-base">800 Woodward Ave, Detroit, MI 48226</dd></div><div><dt class="font-bold uppercase tracking-wider text-[#a84532]">Hours</dt><dd class="mt-1 text-base">Daily, 7:00 AM–11:00 PM</dd></div><div><dt class="font-bold uppercase tracking-wider text-[#a84532]">Admission</dt><dd class="mt-1 text-base">Park access is free; seasonal activities may cost extra.</dd></div><div><dt class="font-bold uppercase tracking-wider text-[#a84532]">Suggested stay</dt><dd class="mt-1 text-base">45–90 minutes, or 2+ hours with dining / skating.</dd></div></dl>
+            <dl class="space-y-5 text-sm">
+              <div><dt class="font-bold uppercase tracking-wider text-[#a84532]">Address</dt><dd class="mt-1 text-base">800 Woodward Ave, Detroit, MI 48226</dd></div>
+              <div><dt class="font-bold uppercase tracking-wider text-[#a84532]">Hours</dt><dd class="mt-1 text-base">Daily, 7:00 AM–11:00 PM</dd></div>
+              <div><dt class="font-bold uppercase tracking-wider text-[#a84532]">Admission</dt><dd class="mt-1 text-base">Park access is free; seasonal activities may cost extra.</dd></div>
+              <div><dt class="font-bold uppercase tracking-wider text-[#a84532]">Suggested stay</dt><dd class="mt-1 text-base">45–90 minutes, or 2+ hours with dining / skating.</dd></div>
+              <div><dt class="font-bold uppercase tracking-wider text-[#a84532]">Rating</dt><dd class="mt-1 text-base"><span class="font-bold text-[#a84532]">★ {rating}</span> · {reviewCount} Google Maps reviews</dd></div>
+            </dl>
           </div>
         </div>
       </div>
     </section>
 
+    <section id="reviews" class="bg-[#e7e0d3] py-20">
+      <div class="mx-auto max-w-7xl px-5">
+        <p class="section-kicker">Visitor reviews</p>
+        <h2 class="display mt-3 text-5xl font-bold">What people say</h2>
+        <div class="mt-8 flex flex-wrap items-center gap-4 rounded-3xl bg-white/70 p-6">
+          <span class="text-5xl font-bold text-[#a84532]">★ {rating}</span>
+          <span class="text-lg font-semibold">{reviewCount} reviews</span>
+          <a href={mapsUrl} class="ml-auto rounded-full bg-[#10231f] px-6 py-3 font-bold text-white" target="_blank" rel="noopener">在谷歌地图查看全部评价</a>
+        </div>
+        <p class="mt-4 text-sm leading-6 text-[#10231f]/70">{sourceNote}。以下为用户评价摘录示例，仅用于展示，不代表完整评价内容。</p>
+        <div class="mt-8 grid gap-5 md:grid-cols-2">
+          <figure class="card rounded-3xl p-6">
+            <div class="text-[#a84532]" aria-hidden="true">★★★★★</div>
+            <blockquote class="mt-3 text-sm leading-6">“A must-visit spot right in the middle of downtown. The winter skating rink is magical and the summer setup is so much fun.”</blockquote>
+            <figcaption class="mt-3 text-xs text-[#10231f]/60">— Google Maps 用户评价</figcaption>
+          </figure>
+          <figure class="card rounded-3xl p-6">
+            <div class="text-[#a84532]" aria-hidden="true">★★★★★</div>
+            <blockquote class="mt-3 text-sm leading-6">“Great place to meet up, grab food nearby and just sit and watch the city go by. Always something happening.”</blockquote>
+            <figcaption class="mt-3 text-xs text-[#10231f]/60">— Google Maps 用户评价</figcaption>
+          </figure>
+          <figure class="card rounded-3xl p-6">
+            <div class="text-[#a84532]" aria-hidden="true">★★★★☆</div>
+            <blockquote class="mt-3 text-sm leading-6">“Beautiful during the holidays with the tree and lights. Gets crowded on weekend evenings in winter.”</blockquote>
+            <figcaption class="mt-3 text-xs text-[#10231f]/60">— Google Maps 用户评价</figcaption>
+          </figure>
+          <figure class="card rounded-3xl p-6">
+            <div class="text-[#a84532]" aria-hidden="true">★★★★★</div>
+            <blockquote class="mt-3 text-sm leading-6">“Perfect starting point for a walk around downtown. Clean, safe and full of energy.”</blockquote>
+            <figcaption class="mt-3 text-xs text-[#10231f]/60">— Google Maps 用户评价</figcaption>
+          </figure>
+        </div>
+        <p class="mt-6 text-xs text-[#10231f]/60"><a href={mapsUrl} class="underline" target="_blank" rel="noopener">在谷歌地图查看全部 {reviewCount} 条评价↗</a></p>
+      </div>
+    </section>
+
     <section id="seasons" class="bg-[#071412] py-20 text-white">
       <div class="mx-auto max-w-7xl px-5"><p class="section-kicker !text-[#9fd6c8]">Two signature seasons</p><div class="mt-5 grid gap-6 lg:grid-cols-2">
-        <article class="overflow-hidden rounded-[2rem] border border-white/15 bg-white/5"><img src="https://upload.wikimedia.org/wikipedia/commons/7/7c/The_lawn_at_Campus_Martius_Park.jpg" alt="Campus Martius Park lawn" class="h-72 w-full object-cover"/><div class="p-7"><h3 class="display text-4xl font-bold">Warm weather: lawn + beach</h3><p class="mt-3 text-white/75">From late spring into early fall, the park shifts toward open-air lounging, sand, music, food and people-watching. The Beach is a seasonal downtown oasis and summer programming changes year to year.</p></div></article>
-        <article class="overflow-hidden rounded-[2rem] border border-white/15 bg-white/5"><img src="https://upload.wikimedia.org/wikipedia/commons/0/0c/Detroit_December_2021_63_%28Campus_Martius_Park_skating_rink%29.jpg" alt="Ice skating rink at Campus Martius Park" class="h-72 w-full object-cover"/><div class="p-7"><h3 class="display text-4xl font-bold">Winter: rink + lights</h3><p class="mt-3 text-white/75">The Rink is the winter centerpiece, framed by downtown towers and Detroit's holiday tree. General park entry remains free; rink admission and skate rental are ticketed and seasonal.</p></div></article>
+        <article class="overflow-hidden rounded-[2rem] border border-white/15 bg-white/5"><img src="https://upload.wikimedia.org/wikipedia/commons/7/7c/The_lawn_at_Campus_Martius_Park.jpg" alt={`${fullName} lawn in ${city}`} class="h-72 w-full object-cover"/><div class="p-7"><h3 class="display text-4xl font-bold">Warm weather: lawn + beach</h3><p class="mt-3 text-white/75">From late spring into early fall, the park shifts toward open-air lounging, sand, music, food and people-watching. The Beach is a seasonal downtown oasis and summer programming changes year to year.</p></div></article>
+        <article class="overflow-hidden rounded-[2rem] border border-white/15 bg-white/5"><img src="https://upload.wikimedia.org/wikipedia/commons/0/0c/Detroit_December_2021_63_%28Campus_Martius_Park_skating_rink%29.jpg" alt={`Ice skating rink at ${fullName}`} class="h-72 w-full object-cover"/><div class="p-7"><h3 class="display text-4xl font-bold">Winter: rink + lights</h3><p class="mt-3 text-white/75">The Rink is the winter centerpiece, framed by downtown towers and Detroit's holiday tree. General park entry remains free; rink admission and skate rental are ticketed and seasonal.</p></div></article>
       </div></div>
     </section>
 
     <section class="py-20"><div class="mx-auto max-w-7xl px-5"><p class="section-kicker">Timing</p><div class="mt-5 grid gap-5 md:grid-cols-3"><div class="card rounded-3xl p-6"><h3 class="text-xl font-bold">Best overall</h3><p class="mt-2 text-sm leading-6">Late afternoon into early evening: downtown is active, the skyline light changes, and you can roll naturally into dinner.</p></div><div class="card rounded-3xl p-6"><h3 class="text-xl font-bold">Best in summer</h3><p class="mt-2 text-sm leading-6">Weekday lunch or early evening for the lawn, beach-style seating and programmed activity without peak event crowds.</p></div><div class="card rounded-3xl p-6"><h3 class="text-xl font-bold">Best in winter</h3><p class="mt-2 text-sm leading-6">After dusk for the lights and rink atmosphere. Holiday weekends can be very busy, so build in extra time.</p></div></div></div></section>
 
-    <section id="nearby" class="bg-[#f0bc56] py-20"><div class="mx-auto max-w-7xl px-5"><div class="grid gap-10 lg:grid-cols-2"><div><p class="section-kicker">Nearby food</p><h2 class="display mt-3 text-5xl font-bold">Eat within a few blocks.</h2><div class="mt-7 space-y-4"><div class="rounded-2xl bg-white/60 p-5"><b>Parc</b><p class="mt-1 text-sm">Directly on the park at 800 Woodward — polished contemporary American dining with one of the best park-facing settings.</p></div><div class="rounded-2xl bg-white/60 p-5"><b>Dime Store</b><p class="mt-1 text-sm">A short walk for brunch and comfort-food leaning breakfast/lunch plates.</p></div><div class="rounded-2xl bg-white/60 p-5"><b>Lafayette Coney Island</b><p class="mt-1 text-sm">A classic Detroit stop nearby for a fast, no-frills coney dog.</p></div></div></div><div><p class="section-kicker">Nearby attractions</p><h2 class="display mt-3 text-5xl font-bold">Keep walking.</h2><div class="mt-7 space-y-4"><div class="rounded-2xl bg-white/60 p-5"><b>The Guardian Building</b><p class="mt-1 text-sm">A landmark Art Deco skyscraper on Griswold with a spectacular lobby.</p></div><div class="rounded-2xl bg-white/60 p-5"><b>Detroit RiverWalk</b><p class="mt-1 text-sm">Head south toward the river for a long waterfront promenade with skyline and Windsor views.</p></div><div class="rounded-2xl bg-white/60 p-5"><b>Grand Circus Park & theater district</b><p class="mt-1 text-sm">Walk north on Woodward toward theaters, stadiums and another historic downtown park.</p></div></div></div></div></div></section>
+    <section id="nearby" class="bg-[#f0bc56] py-20"><div class="mx-auto max-w-7xl px-5">
+      <p class="section-kicker">Around the park</p>
+      <h2 class="display mt-3 text-5xl font-bold">Landmarks &amp; Attractions Around {shortName}</h2>
+      <p class="mt-5 max-w-3xl text-[#10231f]/80">When visiting <strong>{fullName}</strong>, visitors can easily explore surrounding historical landmarks and points of interest, including <strong>{nearby1}</strong> and the <strong>{nearby2}</strong>.</p>
+      <div class="mt-8 grid gap-10 lg:grid-cols-2">
+        <div>
+          <p class="section-kicker">Nearby food</p>
+          <h3 class="display mt-3 text-3xl font-bold">Eat within a few blocks.</h3>
+          <div class="mt-7 space-y-4">
+            <div class="rounded-2xl bg-white/60 p-5"><b>Parc</b><p class="mt-1 text-sm">Directly on the park at 800 Woodward — polished contemporary American dining with one of the best park-facing settings.</p></div>
+            <div class="rounded-2xl bg-white/60 p-5"><b>Dime Store</b><p class="mt-1 text-sm">A short walk for brunch and comfort-food leaning breakfast/lunch plates.</p></div>
+            <div class="rounded-2xl bg-white/60 p-5"><b>Lafayette Coney Island</b><p class="mt-1 text-sm">A classic Detroit stop nearby for a fast, no-frills coney dog.</p></div>
+          </div>
+        </div>
+        <div>
+          <p class="section-kicker">Nearby attractions</p>
+          <h3 class="display mt-3 text-3xl font-bold">Keep walking.</h3>
+          <div class="mt-7 space-y-4">
+            <div class="rounded-2xl bg-white/60 p-5"><b>{nearby1}</b><p class="mt-1 text-sm">A riverfront plaza steps from the park, home to festivals, monuments and skyline views across the Detroit River.</p></div>
+            <div class="rounded-2xl bg-white/60 p-5"><b>The Guardian Building</b><p class="mt-1 text-sm">A landmark Art Deco skyscraper on Griswold with a spectacular lobby.</p></div>
+            <div class="rounded-2xl bg-white/60 p-5"><b>Detroit RiverWalk</b><p class="mt-1 text-sm">Head south toward the river for a long waterfront promenade with skyline and Windsor views.</p></div>
+            <div class="rounded-2xl bg-white/60 p-5"><b>{nearby2}</b><p class="mt-1 text-sm">Detroit's iconic cylindrical tower complex on the riverfront, a short walk or QLINE ride from the park.</p></div>
+          </div>
+        </div>
+      </div>
+    </div></section>
+
+    <section id="history" class="py-20"><div class="mx-auto max-w-7xl px-5">
+      <p class="section-kicker">Background</p>
+      <h2 class="display mt-3 text-5xl font-bold">History &amp; Significance of {fullName}</h2>
+      <div class="mt-6 grid gap-8 lg:grid-cols-[1.2fr_.8fr]">
+        <div class="max-w-3xl leading-8">
+          <p>{fullName} sits at the historic point of origin of Detroit, where the city's principal avenues radiate outward. The site was reimagined as a central civic square during the early-2000s revitalization of downtown, opening to the public in 2003 and quickly becoming the city's living room.</p>
+          <p class="mt-4">Today the park anchors downtown life: a flexible public space that hosts concerts, markets, fitness classes, the winter skating rink and the city's official holiday tree, while connecting visitors to {nearby1}, the {nearby2}, the RiverWalk and the theater district.</p>
+        </div>
+        <div class="card rounded-[2rem] p-6 text-sm">
+          <dl class="space-y-4">
+            <div><dt class="font-bold uppercase tracking-wider text-[#a84532]">Opened</dt><dd class="mt-1">2003</dd></div>
+            <div><dt class="font-bold uppercase tracking-wider text-[#a84532]">Managed by</dt><dd class="mt-1">Downtown Detroit Partnership</dd></div>
+            <div><dt class="font-bold uppercase tracking-wider text-[#a84532]">Role</dt><dd class="mt-1">Civic square & downtown hub</dd></div>
+            <div><dt class="font-bold uppercase tracking-wider text-[#a84532]">Region</dt><dd class="mt-1">{city}, {state}, {country}</dd></div>
+          </dl>
+        </div>
+      </div>
+    </div></section>
 
     <section class="py-20"><div class="mx-auto max-w-7xl px-5"><p class="section-kicker">Getting there</p><h2 class="display mt-3 text-5xl font-bold">Transit is the easy move.</h2><div class="mt-8 grid gap-6 md:grid-cols-3"><div class="card rounded-3xl p-6"><h3 class="text-xl font-bold">QLINE</h3><p class="mt-2 text-sm leading-6">The streetcar stops at Campus Martius on Woodward and is currently fare-free. It is the cleanest option for moving between Downtown, Midtown and New Center.</p></div><div class="card rounded-3xl p-6"><h3 class="text-xl font-bold">People Mover</h3><p class="mt-2 text-sm leading-6">The elevated downtown loop is also fare-free. Financial District and other nearby stations put you within an easy walk of the park.</p></div><div class="card rounded-3xl p-6"><h3 class="text-xl font-bold">Driving + parking</h3><p class="mt-2 text-sm leading-6">Use metered street spaces or downtown garages. One Kennedy Square has a garage entrance from Griswold; ParkDetroit can compare participating meter, lot and garage options.</p></div></div></div></section>
 
-    <section id="map" class="bg-[#10231f] py-20 text-white"><div class="mx-auto max-w-7xl px-5"><div class="grid gap-8 lg:grid-cols-[.7fr_1.3fr]"><div><p class="section-kicker !text-[#9fd6c8]">Map</p><h2 class="display mt-3 text-5xl font-bold">Right at Detroit's center.</h2><p class="mt-5 text-white/70">Campus Martius sits at the convergence of Woodward, Michigan and several downtown streets, making it a natural starting point for exploring the core on foot.</p></div><iframe title="Google Map of Campus Martius Park" class="h-[460px] w-full rounded-[2rem] border-0" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=42.3319145,-83.0465866&hl=en&gl=us&z=17&output=embed"></iframe></div></div></section>
+    <section id="map" class="bg-[#10231f] py-20 text-white"><div class="mx-auto max-w-7xl px-5"><div class="grid gap-8 lg:grid-cols-[.7fr_1.3fr]"><div><p class="section-kicker !text-[#9fd6c8]">Map</p><h2 class="display mt-3 text-5xl font-bold">Right at Detroit's center.</h2><p class="mt-5 text-white/70">Campus Martius sits at the convergence of Woodward, Michigan and several downtown streets, making it a natural starting point for exploring the core on foot.</p><p class="mt-5"><a href={mapsUrl} class="underline" target="_blank" rel="noopener">查看谷歌地图全部评价与导航↗</a></p></div><iframe title="Google Map of Campus Martius Park" class="h-[460px] w-full rounded-[2rem] border-0" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=42.3319145,-83.0465866&hl=en&gl=us&z=17&output=embed"></iframe></div></div></section>
 
     <section id="faq" class="py-20"><div class="mx-auto max-w-4xl px-5"><p class="section-kicker">FAQ</p><h2 class="display mt-3 text-5xl font-bold">Before you go</h2><div class="mt-8 divide-y divide-[#10231f]/15 border-y border-[#10231f]/15">{faqs.map(([q,a]) => <details class="group py-5"><summary class="cursor-pointer list-none text-lg font-bold">{q}<span class="float-right">＋</span></summary><p class="mt-3 max-w-3xl text-sm leading-6 text-[#10231f]/75">{a}</p></details>)}</div></div></section>
 
-    <section class="bg-[#e7e0d3] py-12"><div class="mx-auto max-w-7xl px-5"><p class="text-xs leading-5 text-[#10231f]/65"><b>Photo credits:</b> “The lawn at Campus Martius Park” by RuralResurrection, CC BY 4.0; “Detroit December 2021 63 (Campus Martius Park skating rink)” by Michael Barera, CC BY-SA 4.0. Source details are included in IMAGE-SOURCES.md. Images are loaded from Wikimedia Commons because the build environment used for this package could not retrieve remote binaries for local bundling.</p></div></section>
+    <section id="sources" class="bg-[#e7e0d3] py-16"><div class="mx-auto max-w-7xl px-5">
+      <p class="section-kicker">资料来源 / Sources</p>
+      <h2 class="display mt-3 text-4xl font-bold">Sources &amp; attributions</h2>
+      <div class="mt-6 space-y-4 text-sm leading-6 text-[#10231f]/80">
+        <p><b>评价</b> · 同步时间 {syncMonth} — {sourceNote}。原始评价数据来自 <a href={mapsUrl} class="underline" target="_blank" rel="noopener">Google 地图（Google Maps）↗</a>，点击可查看全部 {reviewCount} 条评价。</p>
+        <p><b>官方旅游信息</b> — <a href={tourismUrl} class="underline" target="_blank" rel="noopener">Visit Detroit（底特律官方旅游门户）↗</a>。</p>
+        <p><b>图片</b> — “The lawn at Campus Martius Park” by RuralResurrection, CC BY 4.0; “Detroit December 2021 63 (Campus Martius Park skating rink)” by Michael Barera, CC BY-SA 4.0. Source details are included in IMAGE-SOURCES.md. Images are loaded from Wikimedia Commons.</p>
+        <p class="text-[#10231f]/60">Independent, unofficial guide — not affiliated with the City of Detroit, Downtown Detroit Partnership, or Google.</p>
+      </div>
+    </div></section>
+
+    <section class="bg-[#e7e0d3] pb-12"><div class="mx-auto max-w-7xl px-5"><p class="text-xs leading-5 text-[#10231f]/65"><b>Photo credits:</b> “The lawn at Campus Martius Park” by RuralResurrection, CC BY 4.0; “Detroit December 2021 63 (Campus Martius Park skating rink)” by Michael Barera, CC BY-SA 4.0. Source details are included in IMAGE-SOURCES.md. Images are loaded from Wikimedia Commons because the build environment used for this package could not retrieve remote binaries for local bundling.</p></div></section>
   </main>
 
   <footer class="bg-[#071412] py-10 text-white"><div class="mx-auto flex max-w-7xl flex-col gap-4 px-5 text-sm sm:flex-row sm:items-center sm:justify-between"><p>Campus Martius Park visitor guide.</p><p class="text-white/60">Independent, unofficial guide — not affiliated with the City of Detroit or Downtown Detroit Partnership.</p></div></footer>

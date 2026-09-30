@@ -1,0 +1,119 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+  path?: string;            // Path within the site, e.g. '/directory'
+  ogImage?: string;
+  jsonLd?: Record<string, unknown>[];
+  current?: string;         // Nav key to highlight as active
+  noindex?: boolean;
+}
+
+const {
+  title,
+  description,
+  path = '/',
+  ogImage,
+  jsonLd = [],
+  current,
+  noindex = false,
+} = Astro.props;
+
+const site = Astro.site;
+const canonical = site ? new URL(path, site).href : `https://martiuspark.com${path}`;
+const defaultOg = 'https://upload.wikimedia.org/wikipedia/commons/7/7c/The_lawn_at_Campus_Martius_Park.jpg';
+const ogUrl = ogImage || defaultOg;
+const mapsUrl = 'https://maps.app.goo.gl/P7XAiSujmMeMguXK7';
+const phone = '+1-313-566-8250';
+
+const navItems = [
+  { href: '/', key: 'home', label: 'Home' },
+  { href: '/directory', key: 'directory', label: 'Directory' },
+  { href: '/the-rink', key: 'rink', label: 'The Rink' },
+  { href: '/parking', key: 'parking', label: 'Parking' },
+  { href: '/dining', key: 'dining', label: 'Dining' },
+  { href: '/#faq', key: 'faq', label: 'FAQ' },
+  { href: '/#map', key: 'map', label: 'Map' },
+];
+---
+
+<!doctype html>
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width" />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <link rel="canonical" href={canonical} />
+  {noindex && <meta name="robots" content="noindex,follow" />}
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:site_name" content="Campus Martius Park Guide" />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:url" content={canonical} />
+  <meta property="og:image" content={ogUrl} />
+  <meta property="og:image:alt" content="Campus Martius Park in downtown Detroit, Michigan" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={title} />
+  <meta name="twitter:description" content={description} />
+  <meta name="twitter:image" content={ogUrl} />
+  <link rel="icon" href="/icons/favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="/icons/favicon-32.png" sizes="32x32" />
+  <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Martius Park" />
+  <link rel="manifest" href="/site.webmanifest" />
+  <meta name="theme-color" content="#10231f" />
+  {jsonLd.map((schema) => <script type="application/ld+json" set:html={JSON.stringify(schema)}></script>)}
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-HXM22WWPKP"></script>
+  <script is:inline>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-HXM22WWPKP');</script>
+  <script is:inline>if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js').catch(()=>{}));}</script>
+</head>
+<body>
+  <header class="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-[#071412]/90 text-white backdrop-blur">
+    <div class="mx-auto flex max-w-7xl items-center justify-between px-5 py-3">
+      <a href="/" aria-label="Campus Martius Park home" class="flex items-center gap-3">
+        <img src="/logo.svg" alt="Campus Martius Detroit" class="h-11 w-auto" />
+      </a>
+      <nav class="hidden items-center gap-5 text-sm md:flex">
+        {navItems.map((item) => (
+          <a href={item.href} class={current === item.key ? 'font-bold text-[#f0bc56]' : 'hover:text-[#f0bc56]'}>{item.label}</a>
+        ))}
+      </nav>
+      <a href={`tel:${phone}`} class="hidden rounded-full bg-[#f0bc56] px-4 py-2 text-sm font-bold text-[#10231f] sm:inline-block">Call {phone.replace('+1-', '')}</a>
+    </div>
+    <nav class="flex gap-4 overflow-x-auto px-5 pb-3 text-xs md:hidden">
+      {navItems.map((item) => (
+        <a href={item.href} class={current === item.key ? 'font-bold text-[#f0bc56]' : 'text-white/80'}>{item.label}</a>
+      ))}
+    </nav>
+  </header>
+
+  <slot />
+
+  <footer class="bg-[#071412] py-10 text-white">
+    <div class="mx-auto max-w-7xl px-5">
+      <div class="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
+        <div class="max-w-md text-sm">
+          <p class="text-base font-bold">Campus Martius Park Guide</p>
+          <p class="mt-2 text-white/60">800 Woodward Ave, Detroit, MI 48226 · <a href={`tel:${phone}`} class="underline">{phone.replace('+1-', '')}</a></p>
+          <p class="mt-2 text-white/60"><a href={mapsUrl} class="underline" target="_blank" rel="noopener">Open in Google Maps ↗</a></p>
+        </div>
+        <nav class="flex flex-wrap gap-x-6 gap-y-2 text-sm text-white/80">
+          <a href="/directory" class="hover:text-[#f0bc56]">Directory</a>
+          <a href="/the-rink" class="hover:text-[#f0bc56]">The Rink</a>
+          <a href="/parking" class="hover:text-[#f0bc56]">Parking</a>
+          <a href="/dining" class="hover:text-[#f0bc56]">Dining</a>
+          <a href="/#faq" class="hover:text-[#f0bc56]">FAQ</a>
+          <a href="/#map" class="hover:text-[#f0bc56]">Map</a>
+        </nav>
+      </div>
+      <p class="mt-8 border-t border-white/10 pt-6 text-xs text-white/50">Independent, unofficial visitor guide — not affiliated with the City of Detroit, Downtown Detroit Partnership, or Google. Ratings are sourced from Google Maps user reviews.</p>
+    </div>
+  </footer>
+</body>
+</html>

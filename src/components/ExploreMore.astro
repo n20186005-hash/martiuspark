@@ -1,0 +1,17 @@
+---
+const links = [
+  { href: '/directory', title: 'Park directory', desc: 'Amenities, dining & nearby attractions' },
+  { href: '/the-rink', title: 'The Rink', desc: 'Winter ice skating hours & tickets' },
+  { href: '/parking', title: 'Parking & transit', desc: 'Garages, street parking & the QLINE' },
+  { href: '/dining', title: 'Dining nearby', desc: 'Parc, Chalet 313 & more' },
+];
+const { exclude } = Astro.props;
+const items = links.filter((l) => l.href !== exclude);
+---
+<section class="bg-[#e7e0d3] py-16"><div class="mx-auto max-w-7xl px-5">
+  <p class="section-kicker">Explore more</p>
+  <h2 class="display mt-3 text-3xl font-bold">Plan the rest of your visit</h2>
+  <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    {items.map((l) => <a href={l.href} class="card rounded-2xl p-5 transition hover:border-[#a84532]"><b class="text-lg">{l.title}</b><p class="mt-1 text-sm">{l.desc}</p></a>)}
+  </div>
+</div></section>

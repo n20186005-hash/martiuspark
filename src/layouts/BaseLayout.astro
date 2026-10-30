@@ -4,7 +4,7 @@ import '../styles/global.css';
 interface Props {
   title: string;
   description: string;
-  path?: string;            // Path within the site, e.g. '/directory'
+  path?: string;            // Path within the site, e.g. '/directory/'
   ogImage?: string;
   jsonLd?: Record<string, unknown>[];
   current?: string;         // Nav key to highlight as active
@@ -23,17 +23,17 @@ const {
 
 const site = Astro.site;
 const canonical = site ? new URL(path, site).href : `https://martiuspark.com${path}`;
-const defaultOg = 'https://upload.wikimedia.org/wikipedia/commons/7/7c/The_lawn_at_Campus_Martius_Park.jpg';
+const defaultOg = 'https://martiuspark.com/images/park-cover.png';
 const ogUrl = ogImage || defaultOg;
 const mapsUrl = 'https://maps.app.goo.gl/P7XAiSujmMeMguXK7';
 const phone = '+1-313-566-8250';
 
 const navItems = [
   { href: '/', key: 'home', label: 'Home' },
-  { href: '/directory', key: 'directory', label: 'Directory' },
-  { href: '/the-rink', key: 'rink', label: 'The Rink' },
-  { href: '/parking', key: 'parking', label: 'Parking' },
-  { href: '/dining', key: 'dining', label: 'Dining' },
+  { href: '/directory/', key: 'directory', label: 'Directory' },
+  { href: '/the-rink/', key: 'rink', label: 'The Rink' },
+  { href: '/parking/', key: 'parking', label: 'Parking' },
+  { href: '/dining/', key: 'dining', label: 'Dining' },
   { href: '/#faq', key: 'faq', label: 'FAQ' },
   { href: '/#map', key: 'map', label: 'Map' },
 ];
@@ -46,7 +46,7 @@ const navItems = [
   <meta name="viewport" content="width=device-width" />
   <title>{title}</title>
   <meta name="description" content={description} />
-  <link rel="canonical" href={canonical} />
+  {!noindex && <link rel="canonical" href={canonical} />}
   {noindex && <meta name="robots" content="noindex,follow" />}
   <meta property="og:type" content="website" />
   <meta property="og:locale" content="en_US" />
@@ -55,7 +55,7 @@ const navItems = [
   <meta property="og:description" content={description} />
   <meta property="og:url" content={canonical} />
   <meta property="og:image" content={ogUrl} />
-  <meta property="og:image:alt" content="Campus Martius Park in downtown Detroit, Michigan" />
+  <meta property="og:image:alt" content="Illustration of a city square and skyline; not a photograph or site plan" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content={title} />
   <meta name="twitter:description" content={description} />
@@ -74,21 +74,21 @@ const navItems = [
   <script is:inline>if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js').catch(()=>{}));}</script>
 </head>
 <body>
-  <header class="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-[#071412]/90 text-white backdrop-blur">
+  <header class="relative z-50 border-b border-white/10 bg-[#071412]/90 text-white backdrop-blur">
     <div class="mx-auto flex max-w-7xl items-center justify-between px-5 py-3">
       <a href="/" aria-label="Campus Martius Park home" class="flex items-center gap-3">
         <img src="/logo.svg" alt="Campus Martius Detroit" class="h-11 w-auto" />
       </a>
-      <nav class="hidden items-center gap-5 text-sm md:flex">
+      <nav aria-label="Main navigation" class="hidden flex-wrap items-center gap-4 text-sm xl:flex">
         {navItems.map((item) => (
-          <a href={item.href} class={current === item.key ? 'font-bold text-[#f0bc56]' : 'hover:text-[#f0bc56]'}>{item.label}</a>
+          <a href={item.href} aria-current={current === item.key ? "page" : undefined} class={current === item.key ? 'font-bold text-[#f0bc56]' : 'hover:text-[#f0bc56]'}>{item.label}</a>
         ))}
       </nav>
-      <a href={`tel:${phone}`} class="hidden rounded-full bg-[#f0bc56] px-4 py-2 text-sm font-bold text-[#10231f] sm:inline-block">Call {phone.replace('+1-', '')}</a>
+      <a href={`tel:${phone}`} class="hidden rounded-full bg-[#f0bc56] px-4 py-2 text-sm font-bold text-[#10231f] xl:inline-block">DDP office {phone.replace('+1-', '')}</a>
     </div>
-    <nav class="flex gap-4 overflow-x-auto px-5 pb-3 text-xs md:hidden">
+    <nav aria-label="Main navigation" class="flex flex-wrap gap-x-5 gap-y-1 px-5 pb-3 text-sm xl:hidden">
       {navItems.map((item) => (
-        <a href={item.href} class={current === item.key ? 'font-bold text-[#f0bc56]' : 'text-white/80'}>{item.label}</a>
+        <a href={item.href} aria-current={current === item.key ? "page" : undefined} class={current === item.key ? 'font-bold text-[#f0bc56]' : 'text-white/80'}>{item.label}</a>
       ))}
     </nav>
   </header>
@@ -100,19 +100,20 @@ const navItems = [
       <div class="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
         <div class="max-w-md text-sm">
           <p class="text-base font-bold">Campus Martius Park Guide</p>
-          <p class="mt-2 text-white/60">800 Woodward Ave, Detroit, MI 48226 · <a href={`tel:${phone}`} class="underline">{phone.replace('+1-', '')}</a></p>
-          <p class="mt-2 text-white/60"><a href={mapsUrl} class="underline" target="_blank" rel="noopener">Open in Google Maps ↗</a></p>
+          <p class="mt-2 text-white/85">800 Woodward Ave, Detroit, MI 48226 · DDP general office: <a href={`tel:${phone}`} class="underline">{phone.replace('+1-', '')}</a></p>
+          <p class="mt-2 text-white/85"><a href={mapsUrl} class="underline" target="_blank" rel="noopener">Open in Google Maps ↗</a></p>
         </div>
         <nav class="flex flex-wrap gap-x-6 gap-y-2 text-sm text-white/80">
-          <a href="/directory" class="hover:text-[#f0bc56]">Directory</a>
-          <a href="/the-rink" class="hover:text-[#f0bc56]">The Rink</a>
-          <a href="/parking" class="hover:text-[#f0bc56]">Parking</a>
-          <a href="/dining" class="hover:text-[#f0bc56]">Dining</a>
+          <a href="/directory/" class="hover:text-[#f0bc56]">Directory</a>
+          <a href="/the-rink/" class="hover:text-[#f0bc56]">The Rink</a>
+          <a href="/parking/" class="hover:text-[#f0bc56]">Parking</a>
+          <a href="/dining/" class="hover:text-[#f0bc56]">Dining</a>
           <a href="/#faq" class="hover:text-[#f0bc56]">FAQ</a>
           <a href="/#map" class="hover:text-[#f0bc56]">Map</a>
         </nav>
       </div>
-      <p class="mt-8 border-t border-white/10 pt-6 text-xs text-white/50">Independent, unofficial visitor guide — not affiliated with the City of Detroit, Downtown Detroit Partnership, or Google. Ratings are sourced from Google Maps user reviews.</p>
+      <p class="mt-6 text-sm"><a href="/privacy/" class="underline">Privacy &amp; cookies</a> · <a href="/#sources" class="underline">Sources &amp; illustration credits</a></p>
+      <p class="mt-8 border-t border-white/10 pt-6 text-xs text-white/85">Independent, unofficial visitor guide — not affiliated with the City of Detroit, Downtown Detroit Partnership, or Google. Rating is a dated, manually checked Google Maps snapshot, not our own survey.</p>
     </div>
   </footer>
 </body>

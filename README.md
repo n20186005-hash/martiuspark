@@ -1,48 +1,13 @@
-# Campus Martius Park Guide
+# Campus Martius Park independent guide
 
-Single-attraction Astro + Tailwind CSS + TypeScript site for Cloudflare Workers.
+Astro server output with the Cloudflare adapter and Tailwind. Existing home, directory, rink, dining and parking pages remain prerendered; a dynamic 404 keeps missing requests at HTTP 404. The visitor guide is not the park operator.
 
-## Requirements
-- Node 22.16.0
-- pnpm 10.11.1
+Use Node 22.16.0 and pnpm 10.11.1: `pnpm install --frozen-lockfile`, `pnpm check`, `pnpm run build`. Existing Cloudflare CI runs `npx wrangler deploy` against the adapter-generated entry/config. Keep package and lock versions unchanged. The source config name is preserved; the connected build uses its existing project-name override.
 
-## Local development
-```bash
-corepack enable
-pnpm install --frozen-lockfile
-pnpm check
-pnpm build
-pnpm dev
-```
+The default site/canonical is https://martiuspark.com; SITE_URL can configure the build explicitly. Sitemap and robots are generated even without that environment value. The source Worker runs before the adapter/static asset fast path, normalizes existing www/HTTP entrances to HTTPS apex, and adds security headers plus noindex on actual 404 responses. Keep the existing production domain bindings; do not infer or create DNS rules from this README.
 
-## Pages
-- `/` — Homepage (visitor guide, reviews, seasons, history, transit, map, FAQ)
-- `/directory` — Park directory: amenities, dining & nearby attractions
-- `/the-rink` — The Rink (winter ice skating): season, hours, tickets, rental
-- `/parking` — Parking & transit: garages, street parking, QLINE / People Mover
-- `/dining` — Dining: Parc, Chalet 313 / Cadillac Lodge, nearby counters
+Pages cover park access, the separate upcoming skating season, venue distinctions, dining and transit. Dated primary links appear on the pages. Hours from different listings are attributed rather than merged into a single schedule. Google Maps figures are manual dated snapshots; review text is not reproduced.
 
-Each page shares `src/layouts/BaseLayout.astro` (canonical, Open Graph, JSON-LD, header/footer)
-and a shared `ExploreMore` cross-link block. Subpages emit `BreadcrumbList` + `FAQPage` JSON-LD;
-the homepage emits `TouristAttraction`/`Park` + `FAQPage`.
+Privacy: existing automatic GA, Google Maps and Cloudflare hosting/browser-measurement possibilities are disclosed at /privacy. No on-site consent switch is promised. The former navigation service-worker cache is retired without deleting unrelated caches.
 
-## Domain configuration
-The site URL is configured in **one place only** through the `SITE_URL` environment variable consumed by `astro.config.mjs`.
-
-- Without `SITE_URL`: the site still builds; canonical and absolute `og:url` are omitted; sitemap integration is disabled.
-- With `SITE_URL=https://your-real-domain.com`: canonical, Open Graph URL, JSON-LD URL and sitemap are all derived from Astro's `site` value.
-
-## SEO tasks handled in code
-- Canonical + Open Graph + Twitter tags on every page.
-- `public/_headers` sends HSTS and standard security headers.
-
-## Cloudflare requirements (console, not code)
-- **Force HTTPS**: enable "Always Use HTTPS" so `http://martiuspark.com/*` 301-redirects to `https://`. Workers Static Assets cannot do domain-level redirects in `_redirects`, so this must be set in the Cloudflare dashboard (SSL/TLS → Edge Certificates, plus a Redirect Rule for `www` → apex if used).
-- Set `SITE_URL` in the deploy environment, then run `pnpm build && pnpm deploy`.
-
-## Photo licensing
-The site loads two real photographs from Wikimedia Commons:
-1. `The lawn at Campus Martius Park.jpg` — RuralResurrection — CC BY 4.0
-2. `Detroit December 2021 63 (Campus Martius Park skating rink).jpg` — Michael Barera — CC BY-SA 4.0
-
-The source pages and attribution text are surfaced in the site footer. The project structure is ready for local images under `public/images/` if you download the originals and swap the two `<img src>` values.
+Scenic visuals are original, explicitly labelled illustrations, not current photographs or maps. Public credits: /ILLUSTRATION-CREDITS.txt. Former photo provenance is retained in IMAGE-SOURCES.md; those remote photos are not served.

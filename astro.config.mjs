@@ -3,12 +3,13 @@ import cloudflare from '@astrojs/cloudflare';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 
-const site = process.env.SITE_URL?.trim() || undefined;
+const site = process.env.SITE_URL?.trim() || 'https://martiuspark.com';
 
 export default defineConfig({
   site,
   output: 'server',
+  trailingSlash: 'always',
   adapter: cloudflare({ platformProxy: { enabled: true } }),
-  integrations: site ? [sitemap()] : [],
+  integrations: [sitemap({ filter: (page) => !new URL(page).pathname.startsWith('/404') })],
   vite: { plugins: [tailwindcss()] }
 });

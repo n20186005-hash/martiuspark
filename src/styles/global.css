@@ -12,3 +12,5 @@ a{color:inherit}
 .card{border:1px solid rgba(16,35,31,.18);background:rgba(255,255,255,.72);backdrop-filter:blur(10px);box-shadow:0 16px 50px rgba(7,20,18,.08)}
 .pill{border:1px solid currentColor;border-radius:999px;padding:.45rem .8rem;font-size:.75rem;letter-spacing:.1em;text-transform:uppercase}
 .section-kicker{font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;font-weight:800;color:var(--brick)}
+
+*{box-sizing:border-box}img,iframe{max-width:100%}main{min-width:0}h1{overflow-wrap:anywhere}a:focus-visible,summary:focus-visible{outline:3px solid #b05d00;outline-offset:5px}header nav a{display:inline-flex;align-items:center;min-height:44px}header a:focus-visible{outline-color:#f0bc56}summary{min-height:44px}summary::marker{color:#a84532}p a:not([class]){text-decoration:underline;text-underline-offset:3px}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}

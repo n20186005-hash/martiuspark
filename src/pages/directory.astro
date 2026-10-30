@@ -1,67 +1,13 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ExploreMore from '../components/ExploreMore.astro';
+import GuideFAQ from '../components/GuideFAQ.astro';
+import SourceNote from '../components/SourceNote.astro';
 export const prerender = true;
-
-const site = 'https://martiuspark.com';
-const path = '/directory';
-const breadcrumbJsonLd = {
-  '@context': 'https://schema.org', '@type': 'BreadcrumbList',
-  itemListElement: [
-    { '@type': 'ListItem', position: 1, name: 'Campus Martius Park', item: `${site}/` },
-    { '@type': 'ListItem', position: 2, name: 'Directory', item: `${site}${path}` }
-  ]
-};
-
-const faqs = [
-  ['What is inside Campus Martius Park?', 'The park centers on a flexible public square with a fountain, the seasonal ice rink (The Rink), the summer beach lounge, the Cadillac Lodge / Chalet 313 winter chalet, the city\'s official holiday tree, a performance stage, and park-facing dining.'],
-  ['Is Campus Martius Park the same as The Rink?', 'No. The Rink is the park\'s seasonal ice skating venue. The surrounding park — lawn, beach, fountain and seating — is free to enter; only rink admission and skate rental are ticketed.'],
-  ['Are there restaurants inside the park?', 'Yes. Parc sits directly on the park at 800 Woodward Ave, and Cadillac Lodge / Chalet 313 operates in winter. Several more restaurants are within a one-block walk.'],
-  ['What is there to do near Campus Martius Park?', 'Within a short walk: Hart Plaza, the Guardian Building, the Detroit RiverWalk and the Renaissance Center. The QLINE and People Mover connect you to the wider downtown.']
-];
-const faqJsonLd = { '@context':'https://schema.org','@type':'FAQPage', mainEntity: faqs.map(([q,a])=>({'@type':'Question',name:q,acceptedAnswer:{'@type':'Answer',text:a}})) };
+const faqs = [["Is The Rink the whole park?", "No. It is a seasonal activity within the park, with separate hours and admission."], ["Are Chalet 313 and Cadillac Lodge the same?", "No. DDP publishes distinct pages and locations. Do not use one venue’s hours for the other."], ["Can I enter nearby landmarks?", "Not necessarily. Nearby buildings and attractions set their own visitor hours, security and admission rules. Confirm directly."]];
+const faqSchema={'@context':'https://schema.org','@type':'FAQPage',mainEntity:faqs.map(([q,a])=>({'@type':'Question',name:q,acceptedAnswer:{'@type':'Answer',text:a}}))};
+const breadcrumb={'@context':'https://schema.org','@type':'BreadcrumbList',itemListElement:[{'@type':'ListItem',position:1,name:'Campus Martius Park',item:'https://martiuspark.com/'},{'@type':'ListItem',position:2,name:"Campus Martius Park Directory",item:'https://martiuspark.com/directory/'}]};
 ---
-
-<BaseLayout
-  title="Campus Martius Park Directory — Amenities, Dining & Attractions"
-  description="The full directory for Campus Martius Park in downtown Detroit: the fountain, The Rink, the summer beach, Cadillac Lodge, dining, and nearby landmarks like Hart Plaza and the RiverWalk."
-  path={path}
-  current="directory"
-  jsonLd={[breadcrumbJsonLd, faqJsonLd]}
->
-  <main>
-    <section class="bg-[#10231f] py-28 text-white"><div class="mx-auto max-w-7xl px-5">
-      <nav aria-label="Breadcrumb" class="text-sm text-white/60"><a href="/" class="underline">Campus Martius Park</a> <span class="px-1">→</span> Directory</nav>
-      <h1 class="display mt-4 text-5xl font-bold sm:text-7xl">Park directory</h1>
-      <p class="mt-6 max-w-2xl text-lg text-white/80">Everything inside and immediately around the square — what to see, what to do, and where to eat.</p>
-    </div></section>
-
-    <section class="py-20"><div class="mx-auto max-w-7xl px-5">
-      <p class="section-kicker">In the park</p>
-      <h2 class="display mt-3 text-4xl font-bold">What's inside Campus Martius Park</h2>
-      <div class="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-        <div class="card rounded-3xl p-6"><h3 class="text-xl font-bold">The fountain & square</h3><p class="mt-2 text-sm">A central water feature and flexible plaza used for markets, fitness classes and community events.</p></div>
-        <div class="card rounded-3xl p-6"><h3 class="text-xl font-bold">The Rink (winter)</h3><p class="mt-2 text-sm">The signature seasonal ice skating rink, framed by downtown towers and the holiday tree. <a href="/the-rink" class="font-bold text-[#a84532]">Hours & tickets →</a></p></div>
-        <div class="card rounded-3xl p-6"><h3 class="text-xl font-bold">The Beach (summer)</h3><p class="mt-2 text-sm">A seasonal sand-and-lounge setup with music and food programming through the warm months.</p></div>
-        <div class="card rounded-3xl p-6"><h3 class="text-xl font-bold">Cadillac Lodge / Chalet 313</h3><p class="mt-2 text-sm">The winter alpine chalet with food and drinks beside The Rink. <a href="/dining" class="font-bold text-[#a84532]">Dining →</a></p></div>
-        <div class="card rounded-3xl p-6"><h3 class="text-xl font-bold">Holiday tree</h3><p class="mt-2 text-sm">Detroit's official Christmas tree, a focal point for winter light displays and photos.</p></div>
-        <div class="card rounded-3xl p-6"><h3 class="text-xl font-bold">Performance stage</h3><p class="mt-2 text-sm">Live music, markets and programmed events throughout the year.</p></div>
-      </div>
-    </div></section>
-
-    <section class="bg-[#e7e0d3] py-20"><div class="mx-auto max-w-7xl px-5">
-      <p class="section-kicker">A block away</p>
-      <h2 class="display mt-3 text-4xl font-bold">Nearby attractions</h2>
-      <div class="mt-8 grid gap-6 md:grid-cols-2">
-        <div class="rounded-3xl bg-white/60 p-6"><b class="text-lg">Hart Plaza</b><p class="mt-2 text-sm">A riverfront plaza for festivals, monuments and skyline views across the Detroit River.</p></div>
-        <div class="rounded-3xl bg-white/60 p-6"><b class="text-lg">The Guardian Building</b><p class="mt-2 text-sm">A landmark Art Deco skyscraper on Griswold with a spectacular lobby.</p></div>
-        <div class="rounded-3xl bg-white/60 p-6"><b class="text-lg">Detroit RiverWalk</b><p class="mt-2 text-sm">A long waterfront promenade with skyline and Windsor views, a short walk south.</p></div>
-        <div class="rounded-3xl bg-white/60 p-6"><b class="text-lg">Renaissance Center</b><p class="mt-2 text-sm">Detroit's cylindrical riverfront tower complex, a QLINE ride from the park.</p></div>
-      </div>
-    </div></section>
-
-    <section id="faq" class="py-20"><div class="mx-auto max-w-4xl px-5"><p class="section-kicker">FAQ</p><h2 class="display mt-3 text-4xl font-bold">Directory questions</h2><div class="mt-8 divide-y divide-[#10231f]/15 border-y border-[#10231f]/15">{faqs.map(([q,a]) => <details class="group py-5"><summary class="cursor-pointer list-none text-lg font-bold">{q}<span class="float-right">＋</span></summary><p class="mt-3 max-w-3xl text-sm leading-6 text-[#10231f]/75">{a}</p></details>)}</div></div></section>
-
-    <ExploreMore exclude={path} />
-  </main>
-</BaseLayout>
+<BaseLayout title="Campus Martius Park Directory | Facilities & Nearby Sights" description="Distinguish the park, seasonal rink and beach, Chalet 313, neighbouring Cadillac Lodge, dining and separate downtown landmarks." path="/directory/" current="directory" jsonLd={[faqSchema,breadcrumb]}>
+<main>
+<section class="bg-[#10231f] text-white relative overflow-hidden"><div class="mx-auto max-w-7xl px-5 py-16 sm:py-24"><nav aria-label="Breadcrumb" class="mb-5 text-sm"><a href="/" class="underline">Campus Martius Park</a> / Park directory</nav><p class="text-sm font-bold uppercase tracking-widest">Detroit · independent visitor guide</p><h1 class="display mt-5 max-w-4xl text-5xl font-bold leading-tight sm:text-7xl">Park directory</h1><p class="mt-6 max-w-3xl text-lg leading-8">Use this as a guide to places and seasonal features, not a list of everything open today.</p></div></section><section class="py-16 "><div class="mx-auto max-w-7xl px-5"><h2 class="display text-4xl font-bold">At the park</h2><div class="mt-7 space-y-5 leading-8"><div class="grid gap-5 md:grid-cols-2"><article class="card rounded-3xl p-6"><h3 class="text-xl font-bold">Square and fountain</h3><p class="mt-3 leading-7">The operator describes a public square with seasonal installations and programming. Fountain operation and particular seating arrangements are not confirmed for today.</p></article><article class="card rounded-3xl p-6"><h3 class="text-xl font-bold">The Rink</h3><p class="mt-3 leading-7">Upcoming 2026/27 skating begins 21 November. <a class="underline" href="/the-rink/">Rink hours and prices</a> are separate from the park.</p></article><article class="card rounded-3xl p-6"><h3 class="text-xl font-bold">Beach and summer activity</h3><p class="mt-3 leading-7">The beach and its food outlets are seasonal. A summer announcement does not establish operation in late October or winter. <a class="underline" href="https://downtowndetroit.org/experience-downtown/downtown-detroit-parks/campus-martius/">Check the park operator</a>.</p></article><article class="card rounded-3xl p-6"><h3 class="text-xl font-bold">Chalet 313</h3><p class="mt-3 leading-7">DDP describes a two-storey heated lounge at Campus Martius. New 2026/27 details remain coming soon. <a class="underline" href="https://downtowndetroit.org/experience-downtown/things-to-do/chalet-313/">Current Chalet 313 information</a>.</p></article><article class="card rounded-3xl p-6"><h3 class="text-xl font-bold">Dining</h3><p class="mt-3 leading-7">Parc’s own location page lists 800 Woodward Ave. <a class="underline" href="/dining/">See dining and reservation checks</a>.</p></article><article class="card rounded-3xl p-6"><h3 class="text-xl font-bold">Holiday tree and events</h3><p class="mt-3 leading-7">The 2026 Tree Lighting is listed for 20 November. Confirm the dated <a class="underline" href="https://downtowndetroit.org/events/">DDP events calendar</a> for individual activities; there is no fixed daily performance schedule.</p></article></div></div></div></section><section class="py-16 "><div class="mx-auto max-w-7xl px-5"><h2 class="display text-4xl font-bold">Neighbouring places are separate</h2><div class="mt-7 space-y-5 leading-8"><div class="grid gap-5 md:grid-cols-2"><article class="card rounded-3xl p-6"><h3 class="text-xl font-bold">Cadillac Lodge</h3><p class="mt-3 leading-7">DDP lists 60 Campus Martius and an upcoming 11 November 2026–3 January 2027 season. It is distinct from Chalet 313. <a class="underline" href="https://downtowndetroit.org/experience-downtown/things-to-do/cadillac-lodge/">Check its own hours and holiday updates</a>.</p></article><article class="card rounded-3xl p-6"><h3 class="text-xl font-bold">Hart Plaza and RiverWalk</h3><p class="mt-3 leading-7">These are separate riverfront destinations. Plan a route and check current access rather than assuming they are inside or one block from this park.</p></article><article class="card rounded-3xl p-6"><h3 class="text-xl font-bold">Guardian Building</h3><p class="mt-3 leading-7">A separate downtown building, not a guaranteed park amenity or freely accessible interior. Confirm visitor entry with the building.</p></article><article class="card rounded-3xl p-6"><h3 class="text-xl font-bold">Renaissance Center</h3><p class="mt-3 leading-7">A separate riverfront complex. QLINE does not take you inside it; consult current transit and building information before planning a connection.</p></article></div></div></div></section><GuideFAQ items={faqs} /><SourceNote /><ExploreMore exclude="/directory/" /></main></BaseLayout>

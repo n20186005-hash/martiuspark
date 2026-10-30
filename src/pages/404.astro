@@ -1,0 +1,9 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+export const prerender=false;
+Astro.response.status=404;
+Astro.response.headers.set('x-robots-tag','noindex');
+Astro.response.headers.set('cache-control','no-store');
+---
+<BaseLayout title="Page not found | Campus Martius Park Guide" description="This page could not be found. Return to the park visitor guide or choose a topic." noindex>
+<main class="mx-auto max-w-4xl px-5 py-20"><p class="section-kicker">404</p><h1 class="display mt-4 text-5xl font-bold">Page not found</h1><p class="mt-6 leading-8">The requested page is unavailable. <a class="underline" href="/">Return to Campus Martius Park</a> or use the navigation for the directory, rink, parking and dining.</p></main></BaseLayout>
